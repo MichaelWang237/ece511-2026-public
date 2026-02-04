@@ -26,6 +26,10 @@ PTX:
 #       -gpgpu_n_clusters 40    # SM cluster count
 #       -gpgpu_n_cores_per_cluster 2    # SM per cluster
 #       -gpgpu_n_mem 24   # memory channel count
+SM_60:
+    extra_params: "-gpgpu_n_clusters 30 -gpgpu_n_cores_per_cluster 2"
+SM_100:
+    extra_params: "-gpgpu_n_clusters 50 -gpgpu_n_cores_per_cluster 2"
 SM_120:
     extra_params: "-gpgpu_n_clusters 60 -gpgpu_n_cores_per_cluster 2"
 SM_160:
