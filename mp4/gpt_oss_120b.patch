@@ -1,3 +1,51 @@
+diff --git a/configs/models/gpt-oss-120b.json b/configs/models/gpt-oss-120b.json
+new file mode 100644
+index 0000000..3f6e8d5
+--- /dev/null
++++ b/configs/models/gpt-oss-120b.json
+@@ -0,0 +1,42 @@
++{
++    "model_name": "gpt-oss-120b",
++    "model_type": "llm",
++    "global_batch_size": 1,
++    "input_seqlen": 4096,
++    "output_seqlen": 512,
++    "decode_width": 1,
++    "d_model": 2880,
++    "num_heads": 64,
++    "num_kv_heads": 8,
++    "d_head": 64,
++    "d_ff": 2880,
++    "num_layers": 36,
++    "ffn_type": "llama",
++    "use_flash_attention": true,
++
++    "sliding_window_size": 128,
++
++    "router_type": "topk",
++    "num_shared_experts": 0,
++    "num_routed_experts": 128,
++    "num_activated_routed_experts_per_token": 4,
++    "num_limited_groups": 1,
++    "moe_d_ff": 2880,
++
++    "data_parallelism_degree": 1,
++    "tensor_parallelism_degree": 1,
++    "pipeline_parallelism_degree": 1,
++    "expert_parallelism_degree": 1,
++    "num_data_parallel_axes": 0,
++    "num_tensor_parallel_axes": 0,
++    "num_pipeline_parallel_axes": 0,
++    "num_expert_parallel_axes": 0,
++    "data_parallel_degree_dcn": 1,
++    "tensor_parallel_degree_dcn": 1,
++    "pipeline_parallel_degree_dcn": 1,
++    "expert_parallel_degree_dcn": 1,
++    "microbatch_size_dcn": 1,
++    "microbatch_size_ici": 1,
++    "num_chips": 1,
++    "output_file_path": "v2.csv"
++}
 diff --git a/neusim/configs/models/LLMConfig.py b/neusim/configs/models/LLMConfig.py
 index 977639a..077494d 100644
 --- a/neusim/configs/models/LLMConfig.py
@@ -574,52 +622,3 @@ index ac03f14..1d82f4d 100644
      elif "dlrm" in model.lower():
          if workload == "training":
              raise NotImplementedError("DLRM training is not supported yet")
-diff --git a/configs/models/gpt-oss-120b.json b/configs/models/gpt-oss-120b.json
-new file mode 100644
-index 0000000..3f6e8d5
---- /dev/null
-+++ b/configs/models/gpt-oss-120b.json
-@@ -0,0 +1,42 @@
-+{
-+    "model_name": "gpt-oss-120b",
-+    "model_type": "llm",
-+    "global_batch_size": 1,
-+    "input_seqlen": 4096,
-+    "output_seqlen": 512,
-+    "decode_width": 1,
-+    "d_model": 2880,
-+    "num_heads": 64,
-+    "num_kv_heads": 8,
-+    "d_head": 64,
-+    "d_ff": 2880,
-+    "num_layers": 36,
-+    "ffn_type": "llama",
-+    "use_flash_attention": true,
-+
-+    "sliding_window_size": 128,
-+
-+    "router_type": "topk",
-+    "num_shared_experts": 0,
-+    "num_routed_experts": 128,
-+    "num_activated_routed_experts_per_token": 4,
-+    "num_limited_groups": 1,
-+    "moe_d_ff": 2880,
-+
-+    "data_parallelism_degree": 1,
-+    "tensor_parallelism_degree": 1,
-+    "pipeline_parallelism_degree": 1,
-+    "expert_parallelism_degree": 1,
-+    "num_data_parallel_axes": 0,
-+    "num_tensor_parallel_axes": 0,
-+    "num_pipeline_parallel_axes": 0,
-+    "num_expert_parallel_axes": 0,
-+    "data_parallel_degree_dcn": 1,
-+    "tensor_parallel_degree_dcn": 1,
-+    "pipeline_parallel_degree_dcn": 1,
-+    "expert_parallel_degree_dcn": 1,
-+    "microbatch_size_dcn": 1,
-+    "microbatch_size_ici": 1,
-+    "num_chips": 1,
-+    "output_file_path": "v2.csv"
-+}
-
