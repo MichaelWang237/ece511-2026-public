@@ -42,6 +42,9 @@ Usage:
     # Change output directory
     python sweep_chip_params.py --output_dir results/my_sweep
 
+    # Override sequence lengths
+    python sweep_chip_params.py --batch_sizes 4 --input_seqlen 4096 --output_seqlen 128
+
     # Combine flags
     python sweep_chip_params.py --params num_sa sa_dim --batch_sizes 1,4 --output_dir results/quick
 """
@@ -115,6 +118,8 @@ def run_single(
     batch_size: int,
     output_root: Path,
     extra_overrides: dict[str, str] | None = None,
+    input_seqlen: int | None = None,
+    output_seqlen: int | None = None,
 ) -> dict:
     """Run one simulation with the given parameter override and return metrics.
 
@@ -125,6 +130,8 @@ def run_single(
         batch_size: Global batch size for this run.
         output_root: Root directory for output files.
         extra_overrides: Optional coupled parameter overrides.
+        input_seqlen: Override input sequence length. If None, uses model config default.
+        output_seqlen: Override output sequence length. If None, uses model config default.
 
     Returns:
         Dict with columns: param, value, batch_size, TTFT_sec,
@@ -141,6 +148,12 @@ def run_single(
     if extra_overrides:
         for target_key, source_key in extra_overrides.items():
             config[target_key] = config[source_key]
+
+    # Override sequence lengths if specified
+    if input_seqlen is not None:
+        config["input_seqlen"] = input_seqlen
+    if output_seqlen is not None:
+        config["output_seqlen"] = output_seqlen
 
     # Single-chip, no parallelism
     config["num_chips"] = 1
@@ -252,6 +265,14 @@ examples:
         help="Path to chip JSON config (baseline). Default: configs/chips/tpuv5p.json.",
     )
     parser.add_argument(
+        "--input_seqlen", type=int, default=None,
+        help="Override input sequence length. Default: use model config value.",
+    )
+    parser.add_argument(
+        "--output_seqlen", type=int, default=None,
+        help="Override output sequence length. Default: use model config value.",
+    )
+    parser.add_argument(
         "--output_dir", type=str, default=str(NEUSIM_ROOT / "results" / "sweep"),
         help="Output directory for sweep results. Default: results/sweep/.",
     )
@@ -264,6 +285,8 @@ examples:
         else DEFAULT_BATCH_SIZES
     )
     output_root = Path(args.output_dir)
+    input_seqlen = args.input_seqlen
+    output_seqlen = args.output_seqlen
 
     base_config = load_base_config(model_path=args.model, chip_path=args.chip)
 
@@ -285,7 +308,8 @@ examples:
             for bs in batch_sizes:
                 done += 1
                 print(f"  [{done}/{total}] {param_name}={val}, bs={bs} ... ", end="", flush=True)
-                result = run_single(base_config, param_name, val, bs, output_root, extra_overrides)
+                result = run_single(base_config, param_name, val, bs, output_root, extra_overrides,
+                                    input_seqlen=input_seqlen, output_seqlen=output_seqlen)
                 all_results.append(result)
                 print(f"TTFT={result['TTFT_sec']:.4f}s, TPOT={result['TPOT_ms']:.2f}ms")
 
