@@ -58,6 +58,19 @@ from neusim.npusim.frontend.llm_ops_generator import LLMOpsGeneratorInference
 from neusim.npusim.frontend import run_sim_lib
 
 
+def _get_ops_generator(config: dict):
+    """Return the appropriate OpsGenerator based on the model name in config."""
+    model_name = config.get("model_name", "").lower()
+    if "gpt-oss" in model_name:
+        from neusim.npusim.frontend.llm_ops_generator import GptOssOpsGenerator
+        return GptOssOpsGenerator(config)
+    elif "deepseek" in model_name:
+        from neusim.npusim.frontend.llm_ops_generator import DeepSeekOpsGenerator
+        return DeepSeekOpsGenerator(config)
+    else:
+        return LLMOpsGeneratorInference(config)
+
+
 NEUSIM_ROOT = Path(__file__).resolve().parent.parent.parent
 
 # ---------------------------------------------------------------------------
@@ -171,7 +184,7 @@ def run_single(
     config["output_file_path"] = str(outdir / "inference-v5p.csv")
 
     # ---- Run simulation ----
-    ops_gen = LLMOpsGeneratorInference(config)
+    ops_gen = _get_ops_generator(config)
     ops_gen.generate(dump_to_file=True, separate_prefill_decode=True)
 
     # ---- Collect stats ----
