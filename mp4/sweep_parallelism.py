@@ -25,7 +25,7 @@ MODELS = [
     ('deepseekv2-236b', DeepSeekOpsGenerator,     True),
     ('llama3_1-405b',   LLMOpsGeneratorInference, False),
 ]
-BATCH_SIZES = [1, 8, 64]
+BATCH_SIZES = [1, 4, 16, 64]
 TP_PP = [(1, 16), (2, 8), (4, 4), (8, 2), (16, 1)]
 INPUT_SEQLEN = 2048
 OUTPUT_SEQLEN = 128
